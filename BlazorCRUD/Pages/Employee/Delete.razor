@@ -1,0 +1,38 @@
+﻿@page "/Employee/Delete/{CurrentID}"
+@using BlazorCRUD.Data
+@inject EmployeeService employeeService
+@inject NavigationManager navigationManager
+
+
+<h3>Do you want to delete <strong>@emp.Name</strong> ?</h3>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <input type="button" class="btn btn-danger" @onclick="@DeleteEmployeeInfo" value="Delete" />
+            <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string CurrentID { get; set; }
+
+    EmployeeInfo emp = new EmployeeInfo();
+
+    protected override async Task OnInitializedAsync()
+    {
+        emp = await Task.Run(() => employeeService.GetEmployeeById(int.Parse(CurrentID)));
+    }
+
+    private void DeleteEmployeeInfo()
+    {
+        employeeService.DeleteEmployee(emp);
+        navigationManager.NavigateTo("Employee");
+    }
+
+    private void Cancel()
+    {
+        navigationManager.NavigateTo("Employee");
+    }
+}
